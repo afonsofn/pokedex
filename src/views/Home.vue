@@ -66,29 +66,58 @@ export default {
           cursor: pointer;
         }
       }
+    }
 
-      .pagination {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-        .material-icons {
-          font-size: 8rem;
-          background: -webkit-linear-gradient(rgba(255, 255, 255, 0.808), rgba(173, 17, 17, 0.637));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+      .material-icons {
+        font-size: 8rem;
+        background: -webkit-linear-gradient(rgba(255, 255, 255, 0.808), rgba(173, 17, 17, 0.637));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
 
-          &:hover {
-            cursor: pointer;
-          }
+        &:hover {
+          cursor: pointer;
         }
+      }
 
-        .material-icons.back {
-          transform: scaleX(-1);
-        }
+      .material-icons.back {
+        transform: scaleX(-1);
       }
     }
   }
 
+  @media only screen and (max-width: 1200px) {
+  .home {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+
+    .poke-description {
+      width: 80vw;
+      margin-left: 0;
+    }
+
+    .poke-list {
+      height: 50vh;
+      width: 100%;
+
+      align-items: center;
+      justify-content: center;
+
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      .poke-item {
+        width: 30%;
+      }
+    }
+  }
+}
 
 </style>
