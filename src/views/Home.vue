@@ -117,6 +117,15 @@ export default {
         width: 30%;
       }
     }
+
+    .pagination {
+      .material-icons {
+        font-size: 8rem;
+        background: -webkit-linear-gradient(rgb(0, 0, 0), rgba(187, 20, 20, 0.637));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
   }
 }
 
