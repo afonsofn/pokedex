@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <section class="poke-description"></section>
+    <section class="poke-description">
+      
+    </section>
     <section class="poke-list">
       <div class="poke-item"></div>
       <div class="poke-item"></div>
