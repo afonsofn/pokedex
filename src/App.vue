@@ -1,11 +1,37 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
     <router-view/>
   </div>
 </template>
 
 <style lang="scss">
+  body, html, #app {
+    margin: 0;
+    padding: 0;
+    font-family: 'Lexend Deca', sans-serif;
+  }
+
+  @media (max-width: 1500px) {
+    html {
+      font-size: 85%;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    html {
+      font-size: 80%;
+    }
+  }
+
+  @media (max-width: 950px) {
+    html {
+      font-size: 70%;
+    }
+  }
+
+  @media (max-width: 820px) {
+    html {
+      font-size: 60%;
+    }
+  }
+</style>
