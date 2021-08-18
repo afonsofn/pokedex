@@ -34,7 +34,7 @@
         <div class="info">
           games: <p>{{ pokemonDetails && pokemonDetails.game_indices.map(version => version.version.name.toUpperCase()).join(', ') }}</p> 
         </div>
-        <div class="info evolution modal-trigger" href="#modal1">
+        <div class="info evolution modal-trigger" href="#modal_evolution">
           EVOLUTIONS
         </div>
       </div>

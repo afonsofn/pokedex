@@ -1,39 +1,35 @@
 <template>
-  <div id="modal1" class="modal">
-    <div v-if="evolutionOrdered.length === 0">
-      <div class="preloader-wrapper big active">
-        <div class="spinner-layer spinner-blue-only">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
-      </div>
+  <div id="modal_evolution" class="modal">
+    <div v-if="evolutionOrdered.length === 0" class="loading-wrapper">
+      <Loading />
     </div>
-    <div v-else class="modal-content">
+
+    <main v-else class="modal-content">
       <template v-for="(evol, index) in evolutionOrdered">
         <div v-bind:key="index" class="evolution-chain">
           <img :src="evol.sprites.front_default" alt="pokemon">
           <p>{{ evol.name }}</p>
         </div>
       </template>
-    </div>
-    <div class="modal-footer">
+    </main>
+
+    <footer class="modal-footer">
       <a class="modal-close waves-effect waves-light white-text btn-flat">close</a>
-    </div>
+    </footer>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex'
+  import Loading from './Loading.vue' 
 
   export default {
     name: 'evolutionModal',
     props: {
       evolution: Object
+    },
+    components: {
+      Loading
     },
     data() {
       return {
@@ -50,7 +46,9 @@
       evolutionChain: state => state.evolution
     }),
     methods: {
+      // Geting evolutions Details
       mountEvolutionChain() {
+        // Seting evolution names
         this.evolutions.firstEvolution = this.evolution.species.name
 
         if(this.evolution.evolves_to.length > 0) {
@@ -61,14 +59,17 @@
           })
         }
 
+        // Removing other evolutions
         this.$store.commit("clearPokemonEvolution")
 
+        // Request for each evolution with names previously set
         Object.values(this.evolutions).map(evolution => {
           if(evolution) {
             this.$store.dispatch("getPokemonDetails", {pokeName: evolution, evolution: true})
           }
         })
       },
+      // Orders evolutions if the requests are resolved out of order
       orderingEvolutionChain() {
         Object.values(this.evolutions).map(evolName => {
           if(evolName) {
@@ -76,6 +77,7 @@
           }
         })
       },
+      // Restart data()
       resetState() {
         this.evolutions = {
           firstEvolution: null,
@@ -86,10 +88,12 @@
       }
     },
     watch: {
+      // Every time get a new prop
       evolution: function(_a, _o) {
         this.resetState()
         this.mountEvolutionChain()
       },
+      // Debounce to call orderingEvolutionChain function after requests.
       evolutionChain: function(_a, _o) {
         if(this.timer !== null) {
           clearTimeout(this.timer)
@@ -98,83 +102,9 @@
         this.timer = setTimeout(() => {
           this.orderingEvolutionChain()
         }, 1000);
-        
       }
     }
   }
 </script>
 
-<style lang="scss" scoped>
-  .modal {
-    border: 5px double #eee;
-    background-image: linear-gradient(to bottom right, rgba(146, 146, 146, 0.808), rgba(17, 44, 119, 0.897) 100%);
-
-    width: 80%;
-    .modal-content{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5rem;
-
-      .evolution-chain {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-
-        animation: decrease 0.5s;
-
-        &:hover {
-          animation: grow 0.7s;
-          transform: scale(1.08)
-        }
-
-        img {
-          height: 15rem;
-        }
-
-        p {
-          margin: 0;
-          color: #eee;
-          font-size: 2rem;
-          text-transform: capitalize;
-        }
-        
-      }
-    }
-
-     @keyframes grow {
-    from {
-      transform: scale(1);
-    }
-    to {
-      transform: scale(1.08);
-    }
-  }
-
-  @keyframes decrease {
-    from {
-      transform: scale(1.08);
-    }
-    to {
-      transform: scale(1);
-    }
-  }
-
-    .modal-footer {
-      background: transparent;
-    }
-  }
-
-  @media only screen and (max-width: 700px) {
-    .modal {
-      height: 100%;
-
-      .modal-content {
-        flex-direction: column;
-        gap: 1rem;
-      }
-    }
-  }
-</style>
-
+<style src="@/styles/evolution-modal.scss" lang="scss" scoped />
