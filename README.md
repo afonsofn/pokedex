@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img alt="pokedex" title="pokedex" src=".github/pokedex-logo.png" width="200px" />
+  <img alt="pokedex" title="pokedex" src=".github/pokedex-logo.png" width="150px" />
 </h1>
 
 <h4 align="center">
