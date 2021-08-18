@@ -38,6 +38,7 @@ export default new Vuex.Store({
     setLocationDetails(state, payload) {
       state.location = payload
     },
+    // Evolution Data
     setEvolutionUrl(state, payload) {
       state.evolutionUrl = payload
     },
@@ -69,6 +70,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    // Get Pokemons names
     getPokemonsPagination({ commit }, params) {
       commit("setLoading", true)
 
@@ -80,6 +82,9 @@ export default new Vuex.Store({
       })
       .then(({ data }) => {
         commit("setPokemonsPagination", data)
+      })
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
       })
       .finally(() => {
         commit("setLoading", false)
@@ -98,6 +103,9 @@ export default new Vuex.Store({
           commit("setPokemonEvolutionDetails", data)
         }
       })
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
+      })
       .finally(() => {
         commit("setPokemonLoading", false)
       })
@@ -107,17 +115,26 @@ export default new Vuex.Store({
       .then(({ data }) => {
         commit("setLocationDetails", data)
       })
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
+      })
     },
     getPokemonEvolutionUrl({ commit }, pokeID) {
       pokeApi(`/pokemon-species/${pokeID}/`)
       .then(({ data: { evolution_chain } }) => {
         commit("setEvolutionUrl", evolution_chain)
       })
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
+      })
     },
     getPokemonEvolutionChain({ commit }, evolution_chain) {
       pokeApi(evolution_chain)
       .then(({ data: { chain } }) => {
         commit("setEvolutionChain", chain)
+      })
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
       })
     }
   }
