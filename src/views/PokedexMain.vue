@@ -53,7 +53,7 @@
       </div>
     </section>
 
-    <EvolutionModal :evolution="evolutionDetails" />
+    <EvolutionModal :evolution="evolutionChain" />
   </main>
 </template>
 
@@ -75,8 +75,8 @@
       allPokemons: state => state.allPokemons,
       pokemonDetails: state => state.pokemonDetails,
       location: state => state.location,
-      evolutionChainUrl: state => state.evolutionChainUrl,
-      evolutionDetails: state => state.evolutionDetails,
+      evolutionUrl: state => state.evolutionUrl,
+      evolutionChain: state => state.evolutionChain,
       // Pagination
       currentPage: state => state.currentPage,
       offset: state => state.offset,
@@ -85,8 +85,6 @@
       previous: state => state.previous,
       // Loadings
       pokemonLoading: state => state.pokemonLoading,
-      locationLoading: state => state.locationLoading,
-      evolutionLoading: state => state.evolutionLoading,
       loading: state => state.loading
     }),
     methods: {
@@ -109,7 +107,7 @@
     },
     mounted() {
       // Pagination request, get Pokemon names 
-      this.$store.dispatch("getAllPokemons", {offset: this.offset, limit: this.limit})
+      this.$store.dispatch("getPokemonsPagination", {offset: this.offset, limit: this.limit})
       // Starting Modal
       M.Modal.init(document.querySelectorAll('.modal'))
     },
@@ -121,14 +119,14 @@
       // Get location/ evolution info.
       pokemonDetails: function(_a, _o) {
         this.$store.dispatch("getPokemonLocation", this.pokemonDetails.id)
-        this.$store.dispatch("getPokemonEvolutionChainUrl", this.pokemonDetails.id)
+        this.$store.dispatch("getPokemonEvolutionUrl", this.pokemonDetails.id)
       },
       // Get evolutionChain.
-      evolutionChainUrl: function(_a, _o) {
-        this.$store.dispatch("getPokemonEvolutionChain", this.evolutionChainUrl)
+      evolutionUrl: function(_a, _o) {
+        this.$store.dispatch("getPokemonEvolutionChain", this.evolutionUrl)
       },
       offset: function(_a, _o) {
-        this.$store.dispatch("getAllPokemons", {offset: this.offset, limit: this.limit})
+        this.$store.dispatch("getPokemonsPagination", {offset: this.offset, limit: this.limit})
       },
     }
   }

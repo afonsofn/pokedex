@@ -43,7 +43,7 @@
       }
     },
     computed: mapState({
-      evolutionChain: state => state.evolution
+      evolutionChainDetails: state => state.evolution
     }),
     methods: {
       // Geting evolutions Details
@@ -73,7 +73,7 @@
       orderingEvolutionChain() {
         Object.values(this.evolutions).map(evolName => {
           if(evolName) {
-            this.evolutionOrdered.push(this.evolutionChain.find(evol => evol.name === evolName))
+            this.evolutionOrdered.push(this.evolutionChainDetails.find(evol => evol.name === evolName))
           }
         })
       },
@@ -94,7 +94,7 @@
         this.mountEvolutionChain()
       },
       // Debounce to call orderingEvolutionChain function after requests.
-      evolutionChain: function(_a, _o) {
+      evolutionChainDetails: function(_a, _o) {
         if(this.timer !== null) {
           clearTimeout(this.timer)
         }
