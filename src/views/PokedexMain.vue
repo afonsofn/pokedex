@@ -1,39 +1,35 @@
 <template>
-  <div class="pokedex-main">
+  <main class="pokedex-main">
     <section class="poke-description">
-      <div class="screen">
+      <header class="screen">
         <div v-if="!!pokemonLoading">
-          <div class="preloader-wrapper big active">
-            <div class="spinner-layer spinner-blue-only">
-              <div class="circle-clipper left">
-                <div class="circle"></div>
-              </div><div class="gap-patch">
-                <div class="circle"></div>
-              </div><div class="circle-clipper right">
-                <div class="circle"></div>
-              </div>
-            </div>
-          </div>
+          <Loading />
         </div>
-        <img v-else :src="pokemonDetails && pokemonDetails.sprites.front_default" alt="pokemon">
-      </div>
 
-      <div class="poke-info">
+        <img v-else :src="pokemonDetails && pokemonDetails.sprites.front_default" alt="pokemon">
+      </header>
+
+      <div class="poke-infos">
         <div class="info">
           name: {{ pokemonDetails && pokemonDetails.name }}
         </div>
+
         <div class="info">
           type: <p>{{ pokemonDetails && pokemonDetails.types.map(type => type.type.name.toUpperCase()).join(', ') }}</p>
         </div>
+
         <div class="info">
           abilities: <p>{{ pokemonDetails && pokemonDetails.abilities.map(ability => ability.ability.name.toUpperCase()).join(', ') }}</p>
         </div>
+
         <div class="info">
           locations: <p>{{ location.length !== 0 ? location.map(location_area => location_area.location_area.name.toUpperCase()).join(', ') : "UNKNOWN LOCATION"}}</p>
         </div>
+
         <div class="info">
           games: <p>{{ pokemonDetails && pokemonDetails.game_indices.map(version => version.version.name.toUpperCase()).join(', ') }}</p> 
         </div>
+
         <div class="info evolution modal-trigger" href="#modal_evolution">
           EVOLUTIONS
         </div>
@@ -58,17 +54,21 @@
     </section>
 
     <EvolutionModal :evolution="evolutionDetails" />
-  </div>
+  </main>
 </template>
 
 <script>
+  // Components
   import EvolutionModal from '@/components/EvolutionModal.vue'
+  import Loading from '@/components/Loading.vue'
+  // Utils
   import { mapState } from 'vuex'
 
   export default {
     name: 'PokedexMain',
     components: {
-      EvolutionModal
+      EvolutionModal,
+      Loading
     },
     computed: mapState({
       // Data
@@ -90,33 +90,40 @@
       loading: state => state.loading
     }),
     methods: {
+      // Pagination Method
       nextPage() {
         if ( this.currentPage > 0 ) {
           this.$store.commit("managePage", "nextPage")
         }
       },
+      // Pagination Method
       previousPage() {
         if (this.currentPage > 1) {
           this.$store.commit("managePage", "previousPage")
         }
       },
+      // Request for Pokemon details 
       getPokemonDetails(pokeName) {
         this.$store.dispatch("getPokemonDetails", {pokeName: pokeName, evolution: false})
       }
     },
     mounted() {
+      // Pagination request, get Pokemon names 
       this.$store.dispatch("getAllPokemons", {offset: this.offset, limit: this.limit})
-
+      // Starting Modal
       M.Modal.init(document.querySelectorAll('.modal'))
     },
     watch: {
+      // Get details of the first Pokemon from pagination
       allPokemons: function(_a, _o) {
         this.$store.dispatch("getPokemonDetails", {pokeName: this.allPokemons[0].name, evolution: false})
       },
+      // Get location/ evolution info.
       pokemonDetails: function(_a, _o) {
         this.$store.dispatch("getPokemonLocation", this.pokemonDetails.id)
         this.$store.dispatch("getPokemonEvolutionChainUrl", this.pokemonDetails.id)
       },
+      // Get evolutionChain.
       evolutionChainUrl: function(_a, _o) {
         this.$store.dispatch("getPokemonEvolutionChain", this.evolutionChainUrl)
       },
