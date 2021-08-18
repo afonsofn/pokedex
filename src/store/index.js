@@ -11,9 +11,9 @@ export default new Vuex.Store({
     allPokemons: null,
     pokemonDetails: null,
     location: [],
-    evolutionChainUrl: null,
-    evolutionDetails: null,
     evolution: [],
+    evolutionChain: null,
+    evolutionUrl: null,
     // Pagination
     currentPage: 1,
     offset: 0,
@@ -22,12 +22,11 @@ export default new Vuex.Store({
     previous: null,
     // Loadings
     pokemonLoading: true,
-    locationLoading: true,
-    evolutionLoading: true,
     loading: true
   },
   mutations: {
-    setAllPokemons(state, payload) {
+    // Data
+    setPokemonsPagination(state, payload) {
       state.allPokemons = payload.results
 
       state.next = payload.next
@@ -39,18 +38,20 @@ export default new Vuex.Store({
     setLocationDetails(state, payload) {
       state.location = payload
     },
-    setPokemonEvolution(state, payload) {
+    // Evolution Data
+    setEvolutionUrl(state, payload) {
+      state.evolutionUrl = payload
+    },
+    setEvolutionChain(state, payload) {
+      state.evolutionChain = payload
+    },
+    setPokemonEvolutionDetails(state, payload) {
       state.evolution.push(payload)
     },
     clearPokemonEvolution(state, _payload) {
       state.evolution = []
     },
-    setEvolutionChainUrl(state, payload) {
-      state.evolutionChainUrl = payload
-    },
-    setEvolutionDetails(state, payload) {
-      state.evolutionDetails = payload
-    },
+    // Pagination
     managePage(state, payload) {
       if (payload === "nextPage") {
         state.offset = state.offset + state.limit
@@ -60,21 +61,17 @@ export default new Vuex.Store({
         --state.currentPage
       }
     },
+    // Loadings
     setPokemonLoading(state, payload) {
       state.pokemonLoading = payload
-    },
-    setLocationLoading(state, payload) {
-      state.locationLoading = payload
-    },
-    setEvolutionLoading(state, payload) {
-      state.evolutionLoading = payload
     },
     setLoading(state, payload) {
       state.loading = payload
     }
   },
   actions: {
-    getAllPokemons({ commit }, params) {
+    // Get Pokemons names
+    getPokemonsPagination({ commit }, params) {
       commit("setLoading", true)
 
       pokeApi('/pokemon/', {
@@ -84,7 +81,10 @@ export default new Vuex.Store({
         }
       })
       .then(({ data }) => {
-        commit("setAllPokemons", data)
+        commit("setPokemonsPagination", data)
+      })
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
       })
       .finally(() => {
         commit("setLoading", false)
@@ -94,44 +94,47 @@ export default new Vuex.Store({
       if(evolution === false) {
         commit("setPokemonLoading", true)
       }
+
       pokeApi(`/pokemon/${pokeName}`)
       .then(({ data }) => {
         if(evolution === false) {
           commit("setPokemonDetails", data)
         } else {
-          commit("setPokemonEvolution", data)
+          commit("setPokemonEvolutionDetails", data)
         }
+      })
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
       })
       .finally(() => {
         commit("setPokemonLoading", false)
       })
     },
     getPokemonLocation({ commit }, pokeID) {
-      commit("setLocationLoading", true)
-
       pokeApi(`/pokemon/${pokeID}/encounters`)
       .then(({ data }) => {
         commit("setLocationDetails", data)
       })
-      .finally(() => {
-        commit("setLocationLoading", false)
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
       })
     },
-    getPokemonEvolutionChainUrl({ commit }, pokeID) {
-      commit("setEvolutionLoading", true)
-
+    getPokemonEvolutionUrl({ commit }, pokeID) {
       pokeApi(`/pokemon-species/${pokeID}/`)
       .then(({ data: { evolution_chain } }) => {
-        commit("setEvolutionChainUrl", evolution_chain)
+        commit("setEvolutionUrl", evolution_chain)
+      })
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
       })
     },
     getPokemonEvolutionChain({ commit }, evolution_chain) {
       pokeApi(evolution_chain)
       .then(({ data: { chain } }) => {
-        commit("setEvolutionDetails", chain)
+        commit("setEvolutionChain", chain)
       })
-      .finally(() => {
-        commit("setEvolutionLoading", false)
+      .catch(_error => {
+        M.toast({html: 'Ops, something went wrong, try again.'})
       })
     }
   }
