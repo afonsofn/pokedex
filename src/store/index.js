@@ -10,7 +10,10 @@ export default new Vuex.Store({
     // Data
     allPokemons: null,
     pokemonDetails: null,
-    location: null,
+    location: [],
+    evolutionChainUrl: null,
+    evolutionDetails: null,
+    evolution: [],
     // Pagination
     currentPage: 1,
     offset: 0,
@@ -20,6 +23,7 @@ export default new Vuex.Store({
     // Loadings
     pokemonLoading: true,
     locationLoading: true,
+    evolutionLoading: true,
     loading: true
   },
   mutations: {
@@ -34,6 +38,18 @@ export default new Vuex.Store({
     },
     setLocationDetails(state, payload) {
       state.location = payload
+    },
+    setPokemonEvolution(state, payload) {
+      state.evolution.push(payload)
+    },
+    clearPokemonEvolution(state, _payload) {
+      state.evolution = []
+    },
+    setEvolutionChainUrl(state, payload) {
+      state.evolutionChainUrl = payload
+    },
+    setEvolutionDetails(state, payload) {
+      state.evolutionDetails = payload
     },
     managePage(state, payload) {
       if (payload === "nextPage") {
@@ -50,6 +66,9 @@ export default new Vuex.Store({
     setLocationLoading(state, payload) {
       state.locationLoading = payload
     },
+    setEvolutionLoading(state, payload) {
+      state.evolutionLoading = payload
+    },
     setLoading(state, payload) {
       state.loading = payload
     }
@@ -58,7 +77,7 @@ export default new Vuex.Store({
     getAllPokemons({ commit }, params) {
       commit("setLoading", true)
 
-      pokeApi('/', {
+      pokeApi('/pokemon/', {
         params: {
           offset: params.offset,
           limit: params.limit
@@ -71,12 +90,17 @@ export default new Vuex.Store({
         commit("setLoading", false)
       })
     },
-    getPokemonDetails({ commit }, pokeName) {
-      commit("setPokemonLoading", true)
-
-      pokeApi(`/${pokeName}`)
+    getPokemonDetails({ commit }, { pokeName, evolution }) {
+      if(evolution === false) {
+        commit("setPokemonLoading", true)
+      }
+      pokeApi(`/pokemon/${pokeName}`)
       .then(({ data }) => {
-        commit("setPokemonDetails", data)
+        if(evolution === false) {
+          commit("setPokemonDetails", data)
+        } else {
+          commit("setPokemonEvolution", data)
+        }
       })
       .finally(() => {
         commit("setPokemonLoading", false)
@@ -85,13 +109,29 @@ export default new Vuex.Store({
     getPokemonLocation({ commit }, pokeID) {
       commit("setLocationLoading", true)
 
-      pokeApi(`/${pokeID}/encounters`)
+      pokeApi(`/pokemon/${pokeID}/encounters`)
       .then(({ data }) => {
-        console.log(data);
         commit("setLocationDetails", data)
       })
       .finally(() => {
         commit("setLocationLoading", false)
+      })
+    },
+    getPokemonEvolutionChainUrl({ commit }, pokeID) {
+      commit("setEvolutionLoading", true)
+
+      pokeApi(`/pokemon-species/${pokeID}/`)
+      .then(({ data: { evolution_chain } }) => {
+        commit("setEvolutionChainUrl", evolution_chain)
+      })
+    },
+    getPokemonEvolutionChain({ commit }, evolution_chain) {
+      pokeApi(evolution_chain)
+      .then(({ data: { chain } }) => {
+        commit("setEvolutionDetails", chain)
+      })
+      .finally(() => {
+        commit("setEvolutionLoading", false)
       })
     }
   }
