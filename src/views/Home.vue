@@ -101,7 +101,7 @@
         }
       },
       getPokemonDetails(pokeName) {
-        this.$store.dispatch("getPokemonDetails", pokeName)
+        this.$store.dispatch("getPokemonDetails", {pokeName: pokeName, evolution: false})
       }
     },
     mounted() {
@@ -111,7 +111,7 @@
     },
     watch: {
       allPokemons: function(_a, _o) {
-        this.$store.dispatch("getPokemonDetails", this.allPokemons[0].name)
+        this.$store.dispatch("getPokemonDetails", {pokeName: this.allPokemons[0].name, evolution: false})
       },
       pokemonDetails: function(_a, _o) {
         this.$store.dispatch("getPokemonLocation", this.pokemonDetails.id)
@@ -380,6 +380,15 @@
     .home {
       .poke-description {
         height: 140vw;
+      }
+
+      .poke-list {
+        .poke-item {
+          padding: 0;
+          h3 {
+            font-size: 1.4rem;
+          }
+        }
       }
     }
   }

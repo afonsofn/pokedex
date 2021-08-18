@@ -13,6 +13,7 @@ export default new Vuex.Store({
     location: [],
     evolutionChainUrl: null,
     evolutionDetails: null,
+    evolution: [],
     // Pagination
     currentPage: 1,
     offset: 0,
@@ -37,6 +38,12 @@ export default new Vuex.Store({
     },
     setLocationDetails(state, payload) {
       state.location = payload
+    },
+    setPokemonEvolution(state, payload) {
+      state.evolution.push(payload)
+    },
+    clearPokemonEvolution(state, _payload) {
+      state.evolution = []
     },
     setEvolutionChainUrl(state, payload) {
       state.evolutionChainUrl = payload
@@ -83,12 +90,17 @@ export default new Vuex.Store({
         commit("setLoading", false)
       })
     },
-    getPokemonDetails({ commit }, pokeName) {
-      commit("setPokemonLoading", true)
-
+    getPokemonDetails({ commit }, { pokeName, evolution }) {
+      if(evolution === false) {
+        commit("setPokemonLoading", true)
+      }
       pokeApi(`/pokemon/${pokeName}`)
       .then(({ data }) => {
-        commit("setPokemonDetails", data)
+        if(evolution === false) {
+          commit("setPokemonDetails", data)
+        } else {
+          commit("setPokemonEvolution", data)
+        }
       })
       .finally(() => {
         commit("setPokemonLoading", false)
