@@ -1,4 +1,5 @@
 @import 'animations.scss';
+@import 'mixins.scss';
 
 .modal {
   border: 5px double #eee;
@@ -6,22 +7,16 @@
   width: 80%;
 
   .loading-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-centralize;
   }
 
   .modal-content{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-centralize;
     gap: 5rem;
 
     .evolution-chain {
-      display: flex;
+      @include flex-centralize;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
 
       animation: decrease 0.5s;
 
